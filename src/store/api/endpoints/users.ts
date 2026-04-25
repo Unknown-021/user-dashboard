@@ -11,12 +11,14 @@ import type {
 const usersService = api.injectEndpoints({
   endpoints: (build) => ({
     getUsers: build.query<GetUsersResponse, GetUsersParams>({
-      query: ({ limit, skip, search }) => ({
+      query: ({ limit, skip, search, sortBy, order }) => ({
         url: search?.trim() ? '/users/search' : '/users',
         params: {
           limit,
           skip,
           ...(search?.trim() ? { q: search.trim() } : {}),
+          ...(sortBy ? { sortBy } : {}),
+          ...(order ? { order } : {}),
         },
       }),
       providesTags: (result) => [

@@ -2,10 +2,9 @@ import { memo, useEffect, useRef, useState, type JSX } from 'react';
 import {
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import type { Column, ColumnDef, Row, SortingState } from '@tanstack/react-table';
+import type { Column, ColumnDef, OnChangeFn, Row, SortingState } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Center, Spinner, Table, Text } from '@chakra-ui/react';
 
@@ -15,6 +14,9 @@ interface Props<TData> {
   isFetching?: boolean;
   fetchNextPage?: () => void;
   emptyText?: string;
+  sorting?: SortingState;
+  onSortingChange?: OnChangeFn<SortingState>;
+  manualSorting?: boolean;
 }
 
 type ColumnAlign = 'left' | 'center' | 'right';
@@ -28,9 +30,13 @@ function VirtualTableComponent<TData>({
   isFetching = false,
   fetchNextPage,
   emptyText = 'No data',
+  sorting: controlledSorting,
+  onSortingChange,
+  manualSorting = false,
 }: Props<TData>) {
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [internalSorting, setInternalSorting] = useState<SortingState>([]);
+  const sorting = controlledSorting ?? internalSorting;
 
   const table = useReactTable<TData>({
     data,
@@ -38,9 +44,9 @@ function VirtualTableComponent<TData>({
     state: {
       sorting,
     },
-    onSortingChange: setSorting,
+    onSortingChange: onSortingChange ?? setInternalSorting,
+    manualSorting,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     defaultColumn: {
       size: 180,
       minSize: 80,

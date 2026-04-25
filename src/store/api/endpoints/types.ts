@@ -14,6 +14,8 @@ export interface GetUsersParams {
   limit: number;
   skip: number;
   search?: string;
+  sortBy?: string;
+  order?: 'asc' | 'desc';
 }
 
 export interface ModifyUsersParams {

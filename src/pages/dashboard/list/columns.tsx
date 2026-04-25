@@ -13,7 +13,6 @@ export const userColumns: ColumnDef<User>[] = [
     maxSize: 30,
   },
   {
-    enableSorting: false,
     id: 'name',
     header: 'Name',
     cell: ({ row }) => `${row.original.firstName} ${row.original.lastName}`,
@@ -26,6 +25,7 @@ export const userColumns: ColumnDef<User>[] = [
   {
     accessorKey: 'company',
     id: 'company',
+    enableSorting: false,
     header: 'Company',
     cell: ({ row }) => row.original.company?.name ?? '—',
   },
